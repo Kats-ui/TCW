@@ -2,7 +2,7 @@
   --blue: #0038a8;
   --red: #ce1126;
   --gold: #fcd116;
-  --bg: #f7f7f7;
+  --bg: #EFEBD8;
   --text: #222;
 }
 * {
@@ -55,6 +55,43 @@ nav a {
 nav a:hover {
   color: var(--blue);
 }
+
+/* Mobile navbar toggle */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 0;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.nav-toggle svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+@media (max-width: 700px) {
+  nav ul {
+    display: none;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+  }
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.5rem;
+  }
+  nav.open ul {
+    display: flex;
+  }
+  nav a {
+    display: block;
+    padding: 0.75rem 1rem;
+  }
+}
 section {
   padding: 3rem 1.5rem;
   max-width: 1100px;
@@ -77,10 +114,51 @@ section h2 {
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
+/* Ensure images inside cards scale nicely */
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
 iframe,
 video {
   width: 100%;
   border-radius: 10px;
+}
+
+/* Responsive video container to preserve 16:9 aspect ratio */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+}
+.video-container iframe,
+.video-container video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  border: 0;
+}
+
+/* Responsive map container (used inside cards) */
+.map-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+}
+.map-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  border: 0;
 }
 footer {
   background: #111;
@@ -90,4 +168,31 @@ footer {
 }
 footer a {
   color: #9ecbff;
+}
+
+@media (max-width: 700px) {
+  /* Stack cards into a single column for small screens */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  section {
+    padding: 2rem 1rem;
+  }
+}
+
+/* Tablet: use two columns and make the 3rd card span full width to avoid awkward spacing */
+@media (min-width: 701px) and (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  /* Let the third card take the full row for balance across all grids */
+  .grid .card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
 }

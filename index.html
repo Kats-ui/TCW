@@ -23,7 +23,12 @@
     </header>
 
     <nav class="navbar" role="navigation" aria-label="Main navigation">
-      <ul>
+      <button class="nav-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <ul id="main-nav">
         <li><a class="nav-link" href="#home">Home</a></li>
         <li><a class="nav-link" href="#profile">Profile</a></li>
         <li><a class="nav-link" href="#culture">Culture</a></li>
@@ -34,14 +39,47 @@
       </ul>
     </nav>
 
+    <script>
+      (function () {
+        const nav = document.querySelector('nav.navbar');
+        const btn = nav.querySelector('.nav-toggle');
+        const menu = nav.querySelector('#main-nav');
+
+        function toggleNav() {
+          const open = nav.classList.toggle('open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) {
+            // move focus to first link for keyboard users
+            const firstLink = menu.querySelector('a');
+            if (firstLink) firstLink.focus();
+          } else {
+            btn.focus();
+          }
+        }
+
+        btn.addEventListener('click', toggleNav);
+
+        // Close nav when focus moves away (for better mobile UX)
+        nav.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && nav.classList.contains('open')) {
+            toggleNav();
+          }
+        });
+      })();
+    </script>
+
     <section>
       <h2>Introduction Video</h2>
-      <iframe
-        height="315"
-        src="https://www.youtube.com/embed/4kJZ1b3Y8cQ"
-        title="Philippines in 4K"
-        allowfullscreen
-      ></iframe>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/embed/mZ_9-mwC1ww?list=PLZb0HuKq_b2iOzGiedyZyW8NVV9BlqEvH"
+          title="TOP 10 PHILIPPINE CULTURE AND TRADITIONS | FULL HD"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
     </section>
 
     <section id="profile">
@@ -53,11 +91,16 @@
             The Philippines lies in the western Pacific Ocean, between the South
             China Sea and the Philippine Sea.
           </p>
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20000000!2d121.7740!3d12.8797"
-            height="250"
-            loading="lazy"
-          ></iframe>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps?q=Philippines&output=embed&z=5"
+              title="Map of the Philippines"
+              loading="lazy"
+              style="border: 0"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            ></iframe>
+          </div>
         </div>
         <div class="card">
           <h3>Flag & Symbols</h3>
@@ -112,11 +155,14 @@
             Sinulog, Ati‑Atihan, and Pahiyas celebrate faith, history, and
             harvest. Arts include kundiman music and tinikling dance.
           </p>
-          <iframe
-            height="200"
-            src="https://www.youtube.com/embed/7K5ZK4q1x9E"
-            allowfullscreen
-          ></iframe>
+          <div class="video-container">
+            <iframe
+              src="https://www.youtube.com/embed/7K5ZK4q1x9E"
+              title="Festival video"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
         </div>
       </div>
     </section>
