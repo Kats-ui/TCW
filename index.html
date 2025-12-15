@@ -11,7 +11,7 @@
     <header id="home">
       <h1>Philippines: Bayanihan in the Global Village</h1>
       <p>
-        <strong>Your Name</strong> • Section: <strong>[Your Section]</strong> •
+        <strong>Franz Jay B. Bardeloza</strong> • Section: <strong>1238</strong> •
         Course: <em>The Contemporary World</em>
       </p>
       <p>
@@ -65,6 +65,76 @@
             toggleNav();
           }
         });
+
+        // Close mobile nav when a link is clicked and update aria-expanded
+        const links = menu.querySelectorAll('a.nav-link');
+        links.forEach((link) => {
+          link.addEventListener('click', (e) => {
+            // update active class immediately on click
+            links.forEach((l) => l.classList.remove('active'));
+            link.classList.add('active');
+            // close mobile nav if open
+            if (nav.classList.contains('open')) toggleNav();
+          });
+        });
+
+        // Scrollspy: highlight active nav link based on visible section
+        const sections = Array.from(links)
+          .map((a) => document.querySelector(a.getAttribute('href')))
+          .filter(Boolean);
+
+        if ('IntersectionObserver' in window && sections.length) {
+          // Track intersection ratios and pick the section most centered
+          // in the viewport. Use a large negative top/bottom margin so
+          // the observer reacts when sections cross the page center.
+          const ratios = {};
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                ratios[entry.target.id] = entry.intersectionRatio || 0;
+              });
+
+              // Find section with highest intersectionRatio
+              let maxId = null;
+              let maxRatio = 0;
+              sections.forEach((s) => {
+                const r = ratios[s.id] || 0;
+                if (r > maxRatio) {
+                  maxRatio = r;
+                  maxId = s.id;
+                }
+              });
+
+              if (maxId) {
+                links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === `#${maxId}`));
+              }
+            },
+            { root: null, rootMargin: '-50% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+          );
+          sections.forEach((s) => observer.observe(s));
+
+          // Initialize active link based on which section is closest to
+          // the viewport center (helps on load and after direct jumps).
+          const updateActiveByCenter = () => {
+            const centerY = window.innerHeight / 2;
+            let closestId = null;
+            let closestDistance = Infinity;
+            sections.forEach((s) => {
+              const rect = s.getBoundingClientRect();
+              const mid = (rect.top + rect.bottom) / 2;
+              const dist = Math.abs(mid - centerY);
+              if (dist < closestDistance) {
+                closestDistance = dist;
+                closestId = s.id;
+              }
+            });
+            if (closestId) links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === `#${closestId}`));
+          };
+
+          // Run once and on resize to keep initial state correct.
+          updateActiveByCenter();
+          window.addEventListener('resize', updateActiveByCenter);
+        }
       })();
     </script>
 
@@ -174,6 +244,60 @@
         remittances, trade, cultural exchange, and participation in
         international institutions.
       </p>
+    </section>
+
+    <section id="issues">
+      <h2>Major Issues</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Climate & Natural Hazards</h3>
+          <p>
+            The Philippines is one of the world's most disaster‑prone countries,
+            experiencing frequent typhoons, flooding, and sea level rise that
+            threaten coastal communities and infrastructure.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Migration & Labor</h3>
+          <p>
+            Millions of Overseas Filipino Workers (OFWs) send remittances that
+            sustain families and the national economy, but migration also
+            raises concerns about worker rights and family separation.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Governance & Inequality</h3>
+          <p>
+            Persistent poverty, unequal access to services, and governance
+            challenges remain national priorities for sustainable development.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="reflection">
+      <h2>Reflection</h2>
+      <p>
+        Studying the Philippines highlights resilience, cultural richness, and
+        the complex ties that bind local lives to global systems. As a global
+        citizen, I feel responsible for learning about the root causes of
+        challenges and supporting equitable, climate‑resilient solutions.
+      </p>
+    </section>
+
+    <section id="references">
+      <h2>References</h2>
+      <ul>
+        <li>
+          "Philippines" — Encyclopaedia / general country overview and facts
+        </li>
+        <li>World Bank — Remittances and economic data</li>
+        <li>UN OCHA — Disaster vulnerability and response information</li>
+        <li>
+          YouTube videos embedded for illustrative cultural content (see
+          embedded videos)
+        </li>
+      </ul>
     </section>
 
     <footer>
