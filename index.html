@@ -9,10 +9,10 @@
 
   <body>
     <header id="home">
-      <h1>Philippines: Bayanihan in the Global Village</h1>
+      <h1>Bayanihan in the Global Village</h1>
       <p>
-        <strong>Franz Jay B. Bardeloza</strong> • Section: <strong>1238</strong> •
-        Course: <em>The Contemporary World</em>
+        <strong>Franz Jay B. Bardeloza</strong> • Section:
+        <strong>1238</strong> • Course: <em>The Contemporary World</em>
       </p>
       <p>
         The Philippines, a Southeast Asian archipelago of over 7,600 islands,
@@ -23,9 +23,26 @@
     </header>
 
     <nav class="navbar" role="navigation" aria-label="Main navigation">
-      <button class="nav-toggle" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 6h18M3 12h18M3 18h18" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <button
+        class="nav-toggle"
+        aria-controls="main-nav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M3 6h18M3 12h18M3 18h18"
+            stroke="#000"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
       <ul id="main-nav">
@@ -41,49 +58,49 @@
 
     <script>
       (function () {
-        const nav = document.querySelector('nav.navbar');
-        const btn = nav.querySelector('.nav-toggle');
-        const menu = nav.querySelector('#main-nav');
+        const nav = document.querySelector("nav.navbar");
+        const btn = nav.querySelector(".nav-toggle");
+        const menu = nav.querySelector("#main-nav");
 
         function toggleNav() {
-          const open = nav.classList.toggle('open');
-          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          const open = nav.classList.toggle("open");
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
           if (open) {
             // move focus to first link for keyboard users
-            const firstLink = menu.querySelector('a');
+            const firstLink = menu.querySelector("a");
             if (firstLink) firstLink.focus();
           } else {
             btn.focus();
           }
         }
 
-        btn.addEventListener('click', toggleNav);
+        btn.addEventListener("click", toggleNav);
 
         // Close nav when focus moves away (for better mobile UX)
-        nav.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && nav.classList.contains('open')) {
+        nav.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && nav.classList.contains("open")) {
             toggleNav();
           }
         });
 
         // Close mobile nav when a link is clicked and update aria-expanded
-        const links = menu.querySelectorAll('a.nav-link');
+        const links = menu.querySelectorAll("a.nav-link");
         links.forEach((link) => {
-          link.addEventListener('click', (e) => {
+          link.addEventListener("click", (e) => {
             // update active class immediately on click
-            links.forEach((l) => l.classList.remove('active'));
-            link.classList.add('active');
+            links.forEach((l) => l.classList.remove("active"));
+            link.classList.add("active");
             // close mobile nav if open
-            if (nav.classList.contains('open')) toggleNav();
+            if (nav.classList.contains("open")) toggleNav();
           });
         });
 
         // Scrollspy: highlight active nav link based on visible section
         const sections = Array.from(links)
-          .map((a) => document.querySelector(a.getAttribute('href')))
+          .map((a) => document.querySelector(a.getAttribute("href")))
           .filter(Boolean);
 
-        if ('IntersectionObserver' in window && sections.length) {
+        if ("IntersectionObserver" in window && sections.length) {
           // Track intersection ratios and pick the section most centered
           // in the viewport. Use a large negative top/bottom margin so
           // the observer reacts when sections cross the page center.
@@ -106,10 +123,19 @@
               });
 
               if (maxId) {
-                links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === `#${maxId}`));
+                links.forEach((l) =>
+                  l.classList.toggle(
+                    "active",
+                    l.getAttribute("href") === `#${maxId}`
+                  )
+                );
               }
             },
-            { root: null, rootMargin: '-50% 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+            {
+              root: null,
+              rootMargin: "-50% 0px -50% 0px",
+              threshold: [0, 0.25, 0.5, 0.75, 1],
+            }
           );
           sections.forEach((s) => observer.observe(s));
 
@@ -128,12 +154,18 @@
                 closestId = s.id;
               }
             });
-            if (closestId) links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === `#${closestId}`));
+            if (closestId)
+              links.forEach((l) =>
+                l.classList.toggle(
+                  "active",
+                  l.getAttribute("href") === `#${closestId}`
+                )
+              );
           };
 
           // Run once and on resize to keep initial state correct.
           updateActiveByCenter();
-          window.addEventListener('resize', updateActiveByCenter);
+          window.addEventListener("resize", updateActiveByCenter);
         }
       })();
     </script>
@@ -227,9 +259,13 @@
           </p>
           <div class="video-container">
             <iframe
-              src="https://www.youtube.com/embed/7K5ZK4q1x9E"
-              title="Festival video"
+              width="1335"
+              height="751"
+              src="https://www.youtube.com/embed/Ed384pPK5V4"
+              title="1 minute video about Philippine Culture, Arts, and Crafts"
               frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
               allowfullscreen
             ></iframe>
           </div>
@@ -239,11 +275,15 @@
 
     <section id="global">
       <h2>Global Connections</h2>
-      <p>
-        The Philippines' global connections are visible through migration,
-        remittances, trade, cultural exchange, and participation in
-        international institutions.
-      </p>
+      <div class="grid">
+        <div class="card">
+          <p>
+            The Philippines' global connections are visible through
+            migration, remittances, trade, cultural exchange, and
+            participation in international institutions.
+          </p>
+        </div>
+      </div>
     </section>
 
     <section id="issues">
@@ -261,8 +301,8 @@
           <h3>Migration & Labor</h3>
           <p>
             Millions of Overseas Filipino Workers (OFWs) send remittances that
-            sustain families and the national economy, but migration also
-            raises concerns about worker rights and family separation.
+            sustain families and the national economy, but migration also raises
+            concerns about worker rights and family separation.
           </p>
         </div>
         <div class="card">
@@ -277,12 +317,17 @@
 
     <section id="reflection">
       <h2>Reflection</h2>
-      <p>
-        Studying the Philippines highlights resilience, cultural richness, and
-        the complex ties that bind local lives to global systems. As a global
-        citizen, I feel responsible for learning about the root causes of
-        challenges and supporting equitable, climate‑resilient solutions.
-      </p>
+      <div class="grid">
+        <div class="card">
+          <p>
+            Studying the Philippines highlights resilience, cultural richness,
+            and the complex ties that bind local lives to global systems. As
+            a global citizen, I feel responsible for learning about the root
+            causes of challenges and supporting equitable, climate‑resilient
+            solutions.
+          </p>
+        </div>
+      </div>
     </section>
 
     <section id="references">

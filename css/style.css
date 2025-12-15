@@ -1,6 +1,7 @@
 :root {
-  --blue: #0038a8;
-  --red: #ce1126;
+  --blue: #1254aa;
+  --red: #270fac;
+  --header-image: url("https://upload.wikimedia.org/wikipedia/commons/c/cc/Banaue-terrace.JPG");
   --gold: #fcd116;
   --bg: #EFEBD8;
   --text: #222;
@@ -20,20 +21,59 @@ html {
   scroll-behavior: smooth;
 }
 header {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://upload.wikimedia.org/wikipedia/commons/9/99/Banaue_Rice_Terraces.jpg")
-      center/cover no-repeat;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45));
   color: #fff;
-  padding: 6rem 1.5rem;
+  padding: 8rem 1.5rem;
+  min-height: 38vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+/* Blurred background image behind header content */
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--header-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.03);
+  filter: blur(6px) brightness(0.6);
+  -webkit-filter: blur(6px) brightness(0.6);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Keep header text above the blurred background */
+header > * {
+  position: relative;
+  z-index: 1;
 }
 header p {
   max-width: 900px;
   margin: 0 auto;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 700px) {
+  header {
+    padding: 4.5rem 1rem;
+    min-height: auto;
+  }
+  header h1 {
+    font-size: 1.75rem;
+  }
 }
 nav {
   position: sticky;
