@@ -3,8 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Philippines: Bayanihan in the Global Village</title>
+
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/enhanced.css" />
+    <script src="js/main.js" defer></script>
+    <meta
+      name="description"
+      content="An interactive academic portfolio exploring Philippine culture, global connections, and contemporary issues."
+    />
+    <meta
+      name="keywords"
+      content="Philippines, culture, global citizenship, bayanihan, Filipino diaspora, ASEAN"
+    />
+    <meta name="author" content="Franz Jay B. Bardeloza" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
 
   <body>
@@ -45,28 +60,104 @@
           />
         </svg>
       </button>
+
       <ul id="main-nav">
         <li><a class="nav-link" href="#home">Home</a></li>
         <li><a class="nav-link" href="#profile">Profile</a></li>
         <li><a class="nav-link" href="#culture">Culture</a></li>
         <li><a class="nav-link" href="#global">Global Connections</a></li>
+        <li><a class="nav-link" href="#timeline">Timeline</a></li>
         <li><a class="nav-link" href="#issues">Issues</a></li>
         <li><a class="nav-link" href="#reflection">Reflection</a></li>
         <li><a class="nav-link" href="#references">References</a></li>
       </ul>
     </nav>
 
+    <!-- Reading Progress Indicator -->
+    <div class="reading-progress" id="reading-progress"></div>
+
+    <!-- Theme Toggle Button -->
+    <button
+      class="theme-toggle"
+      id="theme-toggle"
+      aria-label="Toggle dark mode"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M5 10l7-7 7 7M5 18l7-7 7 7"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
     <script>
+      // Enhanced JavaScript with all interactive features
       (function () {
         const nav = document.querySelector("nav.navbar");
         const btn = nav.querySelector(".nav-toggle");
         const menu = nav.querySelector("#main-nav");
+        const themeToggle = document.getElementById("theme-toggle");
+        const backToTop = document.getElementById("back-to-top");
+        const readingProgress = document.getElementById("reading-progress");
 
+        // Theme Toggle
+        const currentTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", currentTheme);
+
+        themeToggle.addEventListener("click", () => {
+          const currentTheme =
+            document.documentElement.getAttribute("data-theme");
+          const newTheme = currentTheme === "light" ? "dark" : "light";
+
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+
+          themeToggle.innerHTML =
+            newTheme === "light"
+              ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+              : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        });
+
+        // Back to Top Button
+        backToTop.addEventListener("click", () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        window.addEventListener("scroll", () => {
+          const scrollTop = window.pageYOffset;
+          const docHeight = document.body.scrollHeight - window.innerHeight;
+          const scrollPercent = (scrollTop / docHeight) * 100;
+
+          readingProgress.style.width = scrollPercent + "%";
+
+          if (scrollTop > 300) {
+            backToTop.classList.add("visible");
+          } else {
+            backToTop.classList.remove("visible");
+          }
+        });
+
+        // Navigation functionality
         function toggleNav() {
           const open = nav.classList.toggle("open");
           btn.setAttribute("aria-expanded", open ? "true" : "false");
           if (open) {
-            // move focus to first link for keyboard users
             const firstLink = menu.querySelector("a");
             if (firstLink) firstLink.focus();
           } else {
@@ -76,34 +167,27 @@
 
         btn.addEventListener("click", toggleNav);
 
-        // Close nav when focus moves away (for better mobile UX)
         nav.addEventListener("keydown", (e) => {
           if (e.key === "Escape" && nav.classList.contains("open")) {
             toggleNav();
           }
         });
 
-        // Close mobile nav when a link is clicked and update aria-expanded
         const links = menu.querySelectorAll("a.nav-link");
         links.forEach((link) => {
           link.addEventListener("click", (e) => {
-            // update active class immediately on click
             links.forEach((l) => l.classList.remove("active"));
             link.classList.add("active");
-            // close mobile nav if open
             if (nav.classList.contains("open")) toggleNav();
           });
         });
 
-        // Scrollspy: highlight active nav link based on visible section
+        // Scrollspy with Intersection Observer
         const sections = Array.from(links)
           .map((a) => document.querySelector(a.getAttribute("href")))
           .filter(Boolean);
 
         if ("IntersectionObserver" in window && sections.length) {
-          // Track intersection ratios and pick the section most centered
-          // in the viewport. Use a large negative top/bottom margin so
-          // the observer reacts when sections cross the page center.
           const ratios = {};
           const observer = new IntersectionObserver(
             (entries) => {
@@ -111,7 +195,6 @@
                 ratios[entry.target.id] = entry.intersectionRatio || 0;
               });
 
-              // Find section with highest intersectionRatio
               let maxId = null;
               let maxRatio = 0;
               sections.forEach((s) => {
@@ -139,8 +222,6 @@
           );
           sections.forEach((s) => observer.observe(s));
 
-          // Initialize active link based on which section is closest to
-          // the viewport center (helps on load and after direct jumps).
           const updateActiveByCenter = () => {
             const centerY = window.innerHeight / 2;
             let closestId = null;
@@ -163,10 +244,31 @@
               );
           };
 
-          // Run once and on resize to keep initial state correct.
           updateActiveByCenter();
           window.addEventListener("resize", updateActiveByCenter);
         }
+
+        // Animation on scroll for cards and timeline items
+        const animateElements = document.querySelectorAll(
+          ".card, .timeline-item"
+        );
+        const animationObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("loaded");
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+          }
+        );
+
+        animateElements.forEach((element) => {
+          animationObserver.observe(element);
+        });
       })();
     </script>
 
@@ -188,10 +290,12 @@
       <h2>Country or Culture Profile</h2>
       <div class="grid">
         <div class="card">
-          <h3>Location</h3>
+          <h3>Location & Geography</h3>
           <p>
             The Philippines lies in the western Pacific Ocean, between the South
-            China Sea and the Philippine Sea.
+            China Sea and the Philippine Sea. This archipelagic nation consists
+            of over 7,600 islands, making it the world's second-largest
+            archipelago.
           </p>
           <div class="map-container">
             <iframe
@@ -218,14 +322,95 @@
           </p>
         </div>
         <div class="card">
-          <h3>Key Facts</h3>
-          <ul>
-            <li>Population: ~118 million (2025)</li>
-            <li>10M+ Overseas Filipino Workers</li>
-            <li>90% Christian population</li>
-            <li>20 typhoons yearly</li>
-            <li>Biodiversity hotspot</li>
-          </ul>
+          <h3>Population & Demographics</h3>
+          <div
+            class="stat-number interactive-element"
+            data-title="Population Statistics"
+            data-content="<p>The Philippines has a population of approximately 118 million people (2025), making it the 13th most populous country in the world. The country has a young demographic with a median age of around 25 years, contributing to its dynamic workforce and cultural vitality.</p>"
+            data-count="118"
+          >
+            0
+          </div>
+          <p>Million Population (2025)</p>
+          <div
+            class="stat-number interactive-element"
+            data-title="Overseas Filipino Workers"
+            data-content="<p>Over 10 million Filipinos work abroad, making the Philippines one of the top countries for overseas workers. They send home approximately $30-35 billion annually in remittances, which represents about 9-10% of the country's GDP and helps sustain families and communities.</p>"
+            data-count="10"
+          >
+            0
+          </div>
+          <p>Million Overseas Filipino Workers</p>
+          <div
+            class="stat-number interactive-element"
+            data-title="Linguistic Diversity"
+            data-content="<p>The Philippines is one of the most linguistically diverse countries in Asia, with over 180 languages and dialects spoken across the archipelago. This linguistic diversity reflects the country's rich cultural heritage and regional variations.</p>"
+            data-count="180"
+          >
+            0
+          </div>
+          <p>Languages and Dialects</p>
+        </div>
+        <div class="card">
+          <h3>Climate & Geography</h3>
+          <div
+            class="stat-number interactive-element"
+            data-title="Island Geography"
+            data-content="<p>The Philippines consists of over 7,600 islands, making it the world's second-largest archipelago. Only Indonesia has more islands. This geographical diversity has created unique cultural regions, languages, and ecosystems across the archipelago.</p>"
+            data-count="7600"
+          >
+            0
+          </div>
+          <p>Islands in the Archipelago</p>
+          <div
+            class="stat-number interactive-element"
+            data-title="Climate Challenges"
+            data-content="<p>The Philippines experiences an average of 20 typhoons per year, making it one of the most disaster-prone countries globally. This vulnerability has made the nation a leader in disaster preparedness, climate adaptation, and community resilience.</p>"
+            data-count="20"
+          >
+            0
+          </div>
+          <p>Tropical Cyclones Annually</p>
+          <div
+            class="stat-number interactive-element"
+            data-title="Annual Visitors"
+            data-content="<p>The Philippines welcomes over 8 million international visitors annually, showcasing its natural beauty, cultural heritage, and warm hospitality. Tourism is a significant contributor to the country's economy and a way to share Filipino culture with the world.</p>"
+            data-count="8"
+          >
+            0
+          </div>
+          <p>Million Annual Visitors</p>
+        </div>
+
+        <div class="card">
+          <h3>Religion & Culture</h3>
+          <div class="stat-number" data-count="90">0</div>
+          <p>% Christian Population</p>
+          <div class="stat-number" data-count="7">0</div>
+          <p>Major Island Groups</p>
+          <div class="stat-number" data-count="17">0</div>
+          <p>Regions</p>
+        </div>
+        <div class="card">
+          <h3>Economic Indicators</h3>
+          <div
+            class="stat-number interactive-element"
+            data-title="BPO Industry"
+            data-content="<p>The Philippines is a global leader in Business Process Outsourcing (BPO), with the industry contributing significantly to the country's GDP. English proficiency and cultural adaptability make Filipino workers highly sought after worldwide.</p>"
+            data-count="35"
+          >
+            0
+          </div>
+          <p>Billion USD BPO Revenue</p>
+          <div
+            class="stat-number interactive-element"
+            data-title="Remittances"
+            data-content="<p>Remittances from Overseas Filipino Workers exceed $30 billion annually, representing about 9-10% of the country's GDP. This makes the Philippines one of the top remittance-receiving countries globally.</p>"
+            data-count="35"
+          >
+            0
+          </div>
+          <p>Billion USD Remittances</p>
         </div>
       </div>
     </section>
@@ -234,33 +419,84 @@
       <h2>Major Cultural Features</h2>
       <div class="grid">
         <div class="card">
-          <h3>Food</h3>
+          <h3>Food Culture</h3>
           <p>
-            Adobo, lechon, and halo‑halo reflect Malay, Spanish, and Chinese
-            influences and emphasize communal dining.
+            Filipino cuisine represents a unique fusion of Malay, Spanish,
+            Chinese, and American influences, emphasizing communal dining and
+            hospitality.
           </p>
+          <ul>
+            <li>
+              <strong>Adobo:</strong> National dish combining indigenous cooking
+              with Spanish influence
+            </li>
+            <li>
+              <strong>Lechon:</strong> Whole roasted pig, centerpiece of
+              celebrations
+            </li>
+            <li>
+              <strong>Halo-halo:</strong> Shaved ice dessert showing Filipino
+              creativity
+            </li>
+            <li>
+              <strong>Communal eating:</strong> Kamayan (hands) dining
+              reinforces family bonds
+            </li>
+          </ul>
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Chicken_adobo.jpg"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Adobo_DSCF4391.jpg/250px-Adobo_DSCF4391.jpg"
             style="width: 100%"
+            alt="Chicken Adobo - Traditional Filipino Dish"
           />
         </div>
         <div class="card">
-          <h3>Traditions</h3>
+          <h3>Core Traditions</h3>
           <p>
-            Bayanihan shows communal unity, while mano po reflects respect for
-            elders.
+            Filipino values center on family, respect, and community solidarity,
+            expressed through daily practices and social customs.
           </p>
+          <ul>
+            <li>
+              <strong>Bayanihan:</strong> Community cooperation and mutual aid
+            </li>
+            <li>
+              <strong>Mano po:</strong> Respect for elders through hand-kissing
+            </li>
+            <li><strong>Utang na loob:</strong> Debt of gratitude concept</li>
+            <li><strong>Hiya:</strong> Social consciousness and propriety</li>
+            <li>
+              <strong>Pakikipagkapwa:</strong> Shared identity with others
+            </li>
+          </ul>
         </div>
         <div class="card">
-          <h3>Festivals & Arts</h3>
+          <h3>Festivals & Performing Arts</h3>
           <p>
-            Sinulog, Ati‑Atihan, and Pahiyas celebrate faith, history, and
-            harvest. Arts include kundiman music and tinikling dance.
+            Philippine festivals blend Catholic faith with indigenous
+            celebrations, while performing arts preserve ancestral traditions.
           </p>
+          <ul>
+            <li>
+              <strong>Sinulog:</strong> Cebu's dance celebration of Santo Niño
+            </li>
+            <li>
+              <strong>Ati-Atihan:</strong> Kalibo's tribal warrior festival
+            </li>
+            <li>
+              <strong>Pahiyas:</strong> Lucban's harvest thanksgiving with
+              decorated houses
+            </li>
+            <li>
+              <strong>Kundiman:</strong> Romantic folk songs with poetic lyrics
+            </li>
+            <li>
+              <strong>Tinikling:</strong> Bamboo dance mimicking bird movements
+            </li>
+          </ul>
           <div class="video-container">
             <iframe
-              width="1335"
-              height="751"
+              width="1356"
+              height="763"
               src="https://www.youtube.com/embed/Ed384pPK5V4"
               title="1 minute video about Philippine Culture, Arts, and Crafts"
               frameborder="0"
@@ -273,14 +509,274 @@
       </div>
     </section>
 
+
     <section id="global">
       <h2>Global Connections</h2>
       <div class="grid">
         <div class="card">
+          <h3>🏢 Migration & Remittances (Cultural Diffusion)</h3>
           <p>
-            The Philippines' global connections are visible through
-            migration, remittances, trade, cultural exchange, and
-            participation in international institutions.
+            With over <strong>10 million Overseas Filipino Workers (OFWs)</strong> worldwide, the
+            Philippines exemplifies <strong>globalization's impact on migration</strong>— a key concept
+            in The Contemporary World. This diaspora represents cultural
+            diffusion where Filipino values spread globally while foreign
+            influences return home.
+          </p>
+          
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="stat-number" data-count="35">0</div>
+              <p>Billion USD Annual Remittances</p>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" data-count="200">0</div>
+              <p>Countries with OFWs</p>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h4>🌍 Top OFW Destinations</h4>
+            <ul>
+              <li><strong>USA:</strong> Healthcare, engineering, IT professionals</li>
+              <li><strong>Saudi Arabia & UAE:</strong> Construction, domestic work</li>
+              <li><strong>Hong Kong & Singapore:</strong> Domestic helpers, finance</li>
+              <li><strong>Canada & Australia:</strong> Skilled migration programs</li>
+            </ul>
+          </div>
+
+          <div class="impact-box">
+            <h4>💡 Global Impact</h4>
+            <p>OFWs serve as cultural ambassadors, introducing Filipino values like <em>bayanihan</em> (community cooperation) and <em>pakikipagkapwa</em> (shared identity) to workplaces worldwide while contributing 9-10% to the Philippines' GDP.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>💼 Trade & Economic Integration</h3>
+          <p>
+            The Philippines positions itself as a key player in regional and
+            global markets through active participation in ASEAN, WTO, and various
+            trade agreements, making it one of Asia's fastest-growing economies.
+          </p>
+
+          <div class="trade-grid">
+            <div class="trade-item">
+              <h4>📱 Major Exports</h4>
+              <ul>
+                <li>Electronics & semiconductors (60% of exports)</li>
+                <li>Garments & textiles</li>
+                <li>Coconut products & agricultural goods</li>
+                <li>Automotive parts & components</li>
+              </ul>
+            </div>
+            <div class="trade-item">
+              <h4>🏭 Key Industries</h4>
+              <ul>
+                <li><strong>BPO:</strong> $35 billion revenue, world's call center capital</li>
+                <li><strong>Tourism:</strong> 8+ million annual visitors</li>
+                <li><strong>Manufacturing:</strong> Electronics and automotive</li>
+                <li><strong>Agriculture:</strong> Coconut, rice, banana exports</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="partnership-box">
+            <h4>🤝 Trade Partnerships</h4>
+            <ul>
+              <li><strong>ASEAN:</strong> Regional economic integration</li>
+              <li><strong>RCEP:</strong> Regional Comprehensive Economic Partnership</li>
+              <li><strong>US-ASEAN:</strong> Strategic partnership</li>
+              <li><strong>EU-Philippines:</strong> Trade and investment agreements</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🎨 Cultural Exchange & Influence</h3>
+          <p>
+            Filipino culture influences and is influenced by global trends
+            through media, cuisine, arts, and international collaborations,
+            showcasing the Philippines as a vibrant cultural bridge between East and West.
+          </p>
+
+          <div class="culture-sections">
+            <div class="culture-item">
+              <h4>🍽️ Culinary Diplomacy</h4>
+              <ul>
+                <li>Filipino cuisine gaining international recognition</li>
+                <li>Filipino restaurants in major global cities</li>
+                <li>Adobo and sinigang becoming global comfort foods</li>
+                <li>Fusion cuisine innovations worldwide</li>
+              </ul>
+            </div>
+
+            <div class="culture-item">
+              <h4>🎬 Entertainment & Media</h4>
+              <ul>
+                <li>International film festivals showcasing Filipino cinema</li>
+                <li>Filipino artists gaining global recognition</li>
+                <li>Music industry collaborations with international artists</li>
+                <li>Social media influence and digital content creation</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="language-box">
+            <h4>🗣️ Language as Global Connector</h4>
+            <p>English proficiency (ranked 2nd in Asia) facilitates global communication, making Filipinos valuable in international business, tourism, and diplomatic relations. Tagalog and other Philippine languages are taught in universities worldwide.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🌐 International Partnerships & Leadership</h3>
+          <p>
+            The Philippines demonstrates global citizenship through active
+            participation in international organizations, peacekeeping missions,
+            climate initiatives, and sustainable development efforts.
+          </p>
+
+          <div class="partnership-grid">
+            <div class="partnership-item">
+              <h4>🕊️ Peace & Security</h4>
+              <ul>
+                <li><strong>UN Peacekeeping:</strong> Consistent contributor since 1960s</li>
+                <li><strong>ASEAN Chairmanship:</strong> Leadership roles in regional stability</li>
+                <li><strong>Maritime Security:</strong> South China Sea diplomatic initiatives</li>
+                <li><strong>Counter-terrorism:</strong> Regional security cooperation</li>
+              </ul>
+            </div>
+
+            <div class="partnership-item">
+              <h4>🌱 Climate & Environment</h4>
+              <ul>
+                <li><strong>Paris Agreement:</strong> Ambitious climate commitments</li>
+                <li><strong>Renewable Energy:</strong> Leading solar and wind projects</li>
+                <li><strong>Disaster Response:</strong> Regional humanitarian aid</li>
+                <li><strong>Environmental Protection:</strong> Marine conservation leadership</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sdg-box">
+            <h4>🎯 Sustainable Development Goals</h4>
+            <p>The Philippines actively works toward UN SDGs, particularly in poverty reduction, quality education, gender equality, and climate action, demonstrating commitment to global sustainability and human development.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🔬 Technology & Innovation</h3>
+          <p>
+            The Philippines emerges as a digital innovation hub, leveraging its
+            young population and English proficiency to become a leader in
+            technology adoption and digital transformation across Southeast Asia.
+          </p>
+
+          <div class="tech-sections">
+            <div class="tech-item">
+              <h4>💻 Digital Economy</h4>
+              <ul>
+                <li>BPO evolution to high-value digital services</li>
+                <li>E-commerce growth and digital payment systems</li>
+                <li>Fintech innovations and blockchain adoption</li>
+                <li>Start-up ecosystem development</li>
+              </ul>
+            </div>
+
+            <div class="tech-item">
+              <h4>🎓 Education & Skills</h4>
+              <ul>
+                <li>English proficiency driving global competitiveness</li>
+                <li>STEM education initiatives and university partnerships</li>
+                <li>Professional certification programs</li>
+                <li>Online learning platforms and digital literacy</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>🌊 Environmental Leadership</h3>
+          <p>
+            Despite being climate-vulnerable, the Philippines leads in disaster
+            preparedness, renewable energy adoption, and marine conservation,
+            setting examples for global environmental stewardship.
+          </p>
+
+          <div class="environment-grid">
+            <div class="environment-item">
+              <h4>⚡ Renewable Energy</h4>
+              <ul>
+                <li>Geothermal power generation leadership</li>
+                <li>Solar and wind farm developments</li>
+                <li>Hydroelectric projects expansion</li>
+                <li>Energy efficiency programs</li>
+              </ul>
+            </div>
+
+            <div class="environment-item">
+              <h4>🐠 Marine Conservation</h4>
+              <ul>
+                <li>Coral triangle marine biodiversity protection</li>
+                <li>Mangrove restoration projects</li>
+                <li>Sustainable fisheries management</li>
+                <li>Ocean pollution cleanup initiatives</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="resilience-box">
+            <h4>🛡️ Disaster Resilience</h4>
+            <p>The Philippines has developed world-class disaster response systems, early warning technologies, and community-based adaptation strategies that are now being shared globally as climate change increases worldwide vulnerability.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <h2>Historical Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h3>Pre-Colonial Era (Before 1521)</h3>
+          <p>
+            The Philippines was inhabited by indigenous peoples with rich
+            cultural traditions, trade networks across Southeast Asia, and
+            diverse languages. The barangay system governed communities with
+            sophisticated social structures.
+          </p>
+        </div>
+        <div class="timeline-item">
+          <h3>Spanish Colonial Period (1521-1898)</h3>
+          <p>
+            Spanish colonization introduced Catholicism, Spanish language, and
+            colonial governance. The Manila-Acapulco Galleon Trade connected the
+            Philippines to global commerce. Spanish colonial rule lasted over
+            300 years.
+          </p>
+        </div>
+        <div class="timeline-item">
+          <h3>American Period (1898-1946)</h3>
+          <p>
+            The Treaty of Paris transferred Philippine sovereignty to the United
+            States. American influence brought English education, democratic
+            institutions, and infrastructure development. The Commonwealth
+            period paved the way for independence.
+          </p>
+        </div>
+        <div class="timeline-item">
+          <h3>Post-Independence (1946-Present)</h3>
+          <p>
+            Independence was achieved on July 4, 1946. The Philippines joined
+            the United Nations and became a founding member of ASEAN in 1967.
+            Modern challenges include democratization, economic development, and
+            climate adaptation.
+          </p>
+        </div>
+        <div class="timeline-item">
+          <h3>Contemporary Era (2000-Present)</h3>
+          <p>
+            The Philippines embraces digital transformation, renewable energy
+            initiatives, and strengthened regional partnerships. The country
+            emerges as a key player in Southeast Asian affairs and global
+            climate action.
           </p>
         </div>
       </div>
@@ -319,12 +815,59 @@
       <h2>Reflection</h2>
       <div class="grid">
         <div class="card">
+          <h3>Cultural Understanding</h3>
           <p>
-            Studying the Philippines highlights resilience, cultural richness,
-            and the complex ties that bind local lives to global systems. As
-            a global citizen, I feel responsible for learning about the root
-            causes of challenges and supporting equitable, climate‑resilient
-            solutions.
+            Studying the Philippines has revealed the depth of cultural
+            resilience and adaptation. The concept of
+            <em>bayanihan</em>—community cooperation— exemplifies how Filipino
+            values have evolved while maintaining core identity through
+            centuries of foreign influence. This teaches us that globalization
+            need not erase local culture but can strengthen it through
+            thoughtful adaptation.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Global Citizenship Insights</h3>
+          <p>
+            The Philippines' experience as both a source and destination of
+            migration illustrates how local actions have global consequences.
+            The 10+ million Overseas Filipino Workers demonstrate individual
+            choices that collectively reshape economies and cultures worldwide.
+            This interconnectedness teaches us that our personal decisions
+            contribute to larger global patterns.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Challenges & Solutions</h3>
+          <p>
+            Climate vulnerability and disaster risk highlight the unequal
+            impacts of global challenges. As a global citizen, I recognize that
+            supporting climate resilience in vulnerable nations like the
+            Philippines is not just charitable but essential for global
+            stability. The Philippines' leadership in disaster response and
+            climate adaptation offers lessons for worldwide application.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Personal Growth</h3>
+          <p>
+            This study has deepened my appreciation for cultural diversity and
+            strengthened my commitment to global solidarity. Understanding the
+            Philippines' contributions to global culture, economy, and
+            peacekeeping has inspired me to consider how I can contribute to
+            positive global change, whether through supporting migrant rights,
+            climate action, or cultural exchange programs.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Future Perspectives</h3>
+          <p>
+            The Philippines' youthful population and technological adaptation
+            suggest promising future contributions to global innovation. As
+            digital connectivity grows, the Filipino diaspora's cultural bridge
+            function becomes even more significant. This study reinforces that
+            global citizenship requires ongoing learning, empathy, and active
+            engagement with diverse perspectives and challenges.
           </p>
         </div>
       </div>
@@ -332,21 +875,195 @@
 
     <section id="references">
       <h2>References</h2>
-      <ul>
-        <li>
-          "Philippines" — Encyclopaedia / general country overview and facts
-        </li>
-        <li>World Bank — Remittances and economic data</li>
-        <li>UN OCHA — Disaster vulnerability and response information</li>
-        <li>
-          YouTube videos embedded for illustrative cultural content (see
-          embedded videos)
-        </li>
-      </ul>
+      <div class="grid">
+        <div class="card">
+          <h3>Academic & Government Sources</h3>
+          <ul>
+            <li>
+              Philippine Statistics Authority (PSA) - Population and demographic
+              data
+            </li>
+            <li>
+              Department of Foreign Affairs - Overseas Filipino Workers
+              statistics
+            </li>
+            <li>
+              World Bank - Philippines Economic Indicators and Remittance Data
+            </li>
+            <li>UNESCO - Intangible Cultural Heritage of the Philippines</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>International Organizations</h3>
+          <ul>
+            <li>
+              UN OCHA - Disaster Risk Reduction and Response in Philippines
+            </li>
+            <li>ASEAN Secretariat - Regional cooperation and partnerships</li>
+            <li>International Organization for Migration - Migration trends</li>
+            <li>Climate Change Commission - National climate action plans</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Media & Cultural Sources</h3>
+          <ul>
+            <li>National Geographic - Philippine geography and culture</li>
+            <li>Cultural Center of the Philippines - Arts and traditions</li>
+            <li>
+              YouTube educational content on Philippine culture (embedded
+              videos)
+            </li>
+            <li>Philippine Daily Inquirer - Contemporary issues and news</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Research & Data</h3>
+          <ul>
+            <li>Asian Development Bank - Economic development reports</li>
+            <li>Oxford Business Group - Philippines market analysis</li>
+            <li>Migration Policy Institute - Filipino diaspora studies</li>
+            <li>Global Climate Risk Index - Disaster vulnerability data</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <footer>
       <p>&copy; 2025 Philippines: Bayanihan in the Global Village</p>
+      <p>Developed with modern web technologies for optimal user experience</p>
     </footer>
+
+
+
+
+    <!-- Interactive Elements and Quiz -->
+    <script>
+      // Modal functionality
+      function createModal() {
+        if (document.getElementById("infoModal")) return;
+
+        const modalHTML = `
+          <div id="infoModal" class="modal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8);">
+            <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 2rem; border-radius: 12px; width: 90%; max-width: 600px; position: relative; color: #333;">
+              <span class="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+              <h2 id="modalTitle" style="margin-top: 0;">Information</h2>
+              <div id="modalBody"></div>
+            </div>
+          </div>
+        `;
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+        // Close modal functionality
+        document.addEventListener("click", (e) => {
+          if (
+            e.target.classList.contains("close") ||
+            e.target.id === "infoModal"
+          ) {
+            closeModal();
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeModal();
+        });
+      }
+
+      function openModal(title, content) {
+        createModal();
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalBody").innerHTML = content;
+        document.getElementById("infoModal").style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("infoModal");
+        if (modal) {
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
+        }
+      }
+
+      // Interactive elements setup
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add click handlers for interactive elements
+        const interactiveElements = document.querySelectorAll(
+          ".interactive-element"
+        );
+
+        interactiveElements.forEach((element) => {
+          element.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (element.classList.contains("quiz-btn")) return; // Quiz handled separately
+
+            const title = element.getAttribute("data-title") || "Information";
+            const content =
+              element.getAttribute("data-content") || "Additional information.";
+            openModal(title, content);
+          });
+        });
+
+        // Cultural fact generator
+        const culturalFacts = [
+          {
+            title: "The Bayanihan Spirit",
+            content:
+              "The word 'bayanihan' comes from 'bayan', meaning town or community. It refers to the Filipino tradition of communal unity and mutual aid, where neighbors help move a community to a new location by carrying the entire village on their shoulders.",
+          },
+          {
+            title: "Multilingual Nation",
+            content:
+              "The Philippines has over 180 languages and dialects, making it one of the most linguistically diverse countries in the world. Filipino (based on Tagalog) and English are the official languages.",
+          },
+          {
+            title: "Kundiman Heritage",
+            content:
+              "Kundiman is a traditional Filipino love song characterized by a melodic style that reflects deep emotion and poetic lyrics. These songs often express themes of love, longing, and patriotism.",
+          },
+          {
+            title: "Filipino Cuisine Fusion",
+            content:
+              "Filipino food is a unique blend of Malay, Spanish, Chinese, and American influences, creating distinctive dishes like adobo, sinigang, and lechon that represent the country's multicultural heritage.",
+          },
+          {
+            title: "Island Geography",
+            content:
+              "With over 7,600 islands, the Philippines is the world's second-largest archipelago. Only Indonesia has more islands, making the Philippines home to incredible cultural and ecological diversity.",
+          },
+        ];
+
+        // Add fact generator button
+        const factButton = document.createElement("button");
+        factButton.className = "theme-toggle";
+        factButton.style.bottom = "80px";
+        factButton.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>';
+        factButton.setAttribute("aria-label", "Get random cultural fact");
+        factButton.addEventListener("click", () => {
+          const fact =
+            culturalFacts[Math.floor(Math.random() * culturalFacts.length)];
+          openModal(fact.title, `<p>${fact.content}</p>`);
+        });
+        document.body.appendChild(factButton);
+      });
+
+      // Enhanced scroll animations
+      window.addEventListener("load", () => {
+        const sections = document.querySelectorAll("section");
+        sections.forEach((section, index) => {
+          section.style.animationDelay = `${index * 0.1}s`;
+          section.classList.add("loading");
+        });
+      });
+
+      // Add loading states
+      document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card, index) => {
+          card.style.animationDelay = `${index * 0.1}s`;
+          card.classList.add("loading");
+        });
+      });
+    </script>
   </body>
 </html>
